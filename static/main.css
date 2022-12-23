@@ -13,3 +13,14 @@ body {
   padding-bottom: 2rem;
   text-align: center;
 }
+
+.btn-default{
+  background: #474bff;
+  background: -webkit-linear-gradient(84deg, #474bff 0%, #bc48ff 100%);
+  background: linear-gradient(84deg, #474bff 0%, #bc48ff 100%);
+  color: white;
+}
+
+.btn-default:hover{
+  color: rgba(255, 255, 255, 0.8);
+}

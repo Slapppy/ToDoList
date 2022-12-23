@@ -13,7 +13,6 @@ def home(request):
 
 @csrf_exempt
 def todos(request):
-    # request.is_ajax() is deprecated since django 3.1
     is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
     if is_ajax:
@@ -25,6 +24,31 @@ def todos(request):
             todo = data.get('payload')
             Todo.objects.create(task=todo['task'], completed=todo['completed'])
             return JsonResponse({'status': 'Todo added!'})
+        return JsonResponse({'status': 'Invalid request'}, status=400)
+    else:
+        return HttpResponseBadRequest('Invalid request')
+
+
+
+def todo(request, todoId):
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+    if is_ajax:
+        todo = get_object_or_404(Todo, id=todoId)
+
+        if request.method == 'PUT':
+            data = json.load(request)
+            updated_values = data.get('payload')
+
+            todo.task = updated_values['task']
+            todo.completed = updated_values['completed']
+            todo.save()
+
+            return JsonResponse({'status': 'Todo updated!'})
+
+        if request.method == 'DELETE':
+            todo.delete()
+            return JsonResponse({'status': 'Todo deleted!'})
         return JsonResponse({'status': 'Invalid request'}, status=400)
     else:
         return HttpResponseBadRequest('Invalid request')
